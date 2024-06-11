@@ -1,0 +1,17 @@
+{
+  "name": "js_webcrawler",
+  "version": "1.0.0",
+  "description": "SEO link analyzer",
+  "type": "module",
+  "scripts": {
+    "start": "node main.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
+  "jest":{
+    "transform": {}
+  },
+  "author": "DicosimoDomenico",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
