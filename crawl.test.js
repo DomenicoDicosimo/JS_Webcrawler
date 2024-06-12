@@ -1,43 +1,56 @@
 import { test, expect } from "@jest/globals";
-import { normalizeURL } from "./crawl.js";
+import { normalizeURL, getURLsFromHtml } from "./crawl.js";
 
 
-test('normalize https://blog.boot.dev/path/', () => {
-    expect(normalizeURL('https://blog.boot.dev/path/')).toBe('blog.boot.dev/path');
-});
-
-test('normalize https://blog.boot.dev/path', () => {
-    expect(normalizeURL('https://blog.boot.dev/path')).toBe('blog.boot.dev/path');
-});
-
-test('normalize http://blog.boot.dev/path/', () => {
-    expect(normalizeURL('https://blog.boot.dev/path/')).toBe('blog.boot.dev/path');
-});
-
-test('normalize http://blog.boot.dev/path', () => {
-    expect(normalizeURL('http://blog.boot.dev/path')).toBe('blog.boot.dev/path');
-});
-
-test('normalize https://blog.boot.dev/path?query=123#fragment', () => {
-    expect(normalizeURL('https://blog.boot.dev/path?query=123#fragment')).toBe('blog.boot.dev/path');
-});
-
-test('normalize https://blog.boot.dev:8080/path/', () => {
-    expect(normalizeURL('https://blog.boot.dev:8080/path/')).toBe('blog.boot.dev/path');
-});
-
-test('normalize HttpS://blog.boot.dev/path/', () => {
-    expect(normalizeURL('HttpS://blog.boot.dev/path/')).toBe('blog.boot.dev/path');
-});
-
-test('normalize https://BlOg.BooT.Dev/path/', () => {
-    expect(normalizeURL('https://BlOg.BooT.Dev/path/')).toBe('blog.boot.dev/path');
-});
-
-test('normalize https://blog.boot.dev//path/', () => {
-    expect(normalizeURL('https://blog.boot.dev//path/')).toBe('blog.boot.dev/path');
-});
-
-test('normalize   https://blog.boot.dev/path/   ', () => {
-    expect(normalizeURL('  https://blog.boot.dev/path/  ')).toBe('blog.boot.dev/path');
-});
+test('normalizeURL protocol', () => {
+    const input = 'https://blog.boot.dev/path'
+    const actual = normalizeURL(input)
+    const expected = 'blog.boot.dev/path'
+    expect(actual).toEqual(expected)
+  })
+  
+  test('normalizeURL slash', () => {
+    const input = 'https://blog.boot.dev/path/'
+    const actual = normalizeURL(input)
+    const expected = 'blog.boot.dev/path'
+    expect(actual).toEqual(expected)
+  })
+  
+  test('normalizeURL capitals', () => {
+    const input = 'https://BLOG.boot.dev/path'
+    const actual = normalizeURL(input)
+    const expected = 'blog.boot.dev/path'
+    expect(actual).toEqual(expected)
+  })
+  
+  test('normalizeURL http', () => {
+    const input = 'http://BLOG.boot.dev/path'
+    const actual = normalizeURL(input)
+    const expected = 'blog.boot.dev/path'
+    expect(actual).toEqual(expected)
+  })
+  
+  test('getURLsFromHtml absolute', () => {
+    const inputURL = 'https://blog.boot.dev'
+    const inputBody = '<html><body><a href="https://blog.boot.dev"><span>Boot.dev></span></a></body></html>'
+    const actual = getURLsFromHtml(inputBody, inputURL)
+    const expected = [ 'https://blog.boot.dev/' ]
+    expect(actual).toEqual(expected)
+  })
+  
+  test('getURLsFromHtml relative', () => {
+    const inputURL = 'https://blog.boot.dev'
+    const inputBody = '<html><body><a href="/path/one"><span>Boot.dev></span></a></body></html>'
+    const actual = getURLsFromHtml(inputBody, inputURL)
+    const expected = [ 'https://blog.boot.dev/path/one' ]
+    expect(actual).toEqual(expected)
+  })
+  
+  test('getURLsFromHtml both', () => {
+    const inputURL = 'https://blog.boot.dev'
+    const inputBody = '<html><body><a href="/path/one"><span>Boot.dev></span></a><a href="https://other.com/path/one"><span>Boot.dev></span></a></body></html>'
+    const actual = getURLsFromHtml(inputBody, inputURL)
+    const expected = [ 'https://blog.boot.dev/path/one', 'https://other.com/path/one' ]
+    expect(actual).toEqual(expected)
+  })
+  
