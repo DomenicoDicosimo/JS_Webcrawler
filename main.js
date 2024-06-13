@@ -1,5 +1,6 @@
 import { argv } from 'node:process';
 import { crawlPage } from './crawl.js'; 
+import { printReport } from './report.js'; 
 
 async function main() {
     try {
@@ -13,7 +14,7 @@ async function main() {
             const baseURL= argv[2]; 
             console.log(`The crawler is starting at ${argv[2]}`);
             const pages = await crawlPage(baseURL);
-            console.log(pages);
+            printReport(pages);
         }
 
     } catch (err) {
