@@ -1,7 +1,7 @@
 import { argv } from 'node:process';
 import { crawlPage } from './crawl.js'; 
 
-function main() {
+async function main() {
     try {
         if (argv.length < 3){
             throw new Error('No URL was passed in.')
@@ -10,8 +10,10 @@ function main() {
             throw new Error(`Too many URLs were passed in. ${argv}`)
         }
         else{
-            console.log(`The crawler is starting at ${argv[2]}`)
-            crawlPage(argv[2])
+            const baseURL= argv[2]; 
+            console.log(`The crawler is starting at ${argv[2]}`);
+            const pages = await crawlPage(baseURL);
+            console.log(pages);
         }
 
     } catch (err) {
